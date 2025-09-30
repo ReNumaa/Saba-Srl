@@ -1,0 +1,99 @@
+{
+  "mittente": {
+    "nome": "EXAMPLE COMPANY SRL",
+    "indirizzo": "VIA DELLE INDUSTRIE 123 - ZONA INDUSTRIALE",
+    "localita": "12345 EXAMPLE CITY - PROVINCIA ITALIA"
+  },
+  "clienti": {
+    "cliente1": {
+      "nome": "CLIENTE1",
+      "destinatario": {
+        "nome": "CLIENTE1",
+        "indirizzo": "VIA ESEMPIO 45",
+        "localita": "20121 MILANO - MI ITALIA"
+      },
+      "luogoConsegna": "20121 MILANO - MI ITALIA"
+    },
+    "cliente2": {
+      "nome": "CLIENTE2",
+      "destinatario": {
+        "nome": "CLIENTE2",
+        "indirizzo": "CORSO PROVA 89",
+        "localita": "10128 TORINO - TO ITALIA"
+      },
+      "luogoConsegna": "10128 TORINO - TO ITALIA"
+    },
+    "cliente3": {
+      "nome": "CLIENTE3",
+      "destinatario": {
+        "nome": "CLIENTE3",
+        "indirizzo": "STRASSE DEMO 42",
+        "localita": "10115 BERLIN GERMANIA"
+      },
+      "luogoConsegna": "10115 BERLIN GERMANIA"
+    },
+    "cliente4": {
+      "nome": "CLIENTE4",
+      "destinatario": {
+        "nome": "CLIENTE4",
+        "indirizzo": "CARRER TEST 15",
+        "localita": "08001 BARCELONA SPAGNA"
+      },
+      "luogoConsegna": "08001 BARCELONA SPAGNA"
+    },
+    "cliente5": {
+      "nome": "CLIENTE5",
+      "destinatario": {
+        "nome": "CLIENTE5",
+        "indirizzo": "RUE SAMPLE 78",
+        "localita": "69001 LYON FRANCIA"
+      },
+      "luogoConsegna": "69001 LYON FRANCIA"
+    },
+    "cliente6": {
+      "nome": "CLIENTE6",
+      "destinatario": {
+        "nome": "CLIENTE6",
+        "indirizzo": "ULICA MOCK 33",
+        "localita": "1000 LJUBLJANA SLOVENIA"
+      },
+      "luogoConsegna": "1000 LJUBLJANA SLOVENIA"
+    },
+    "cliente7": {
+      "nome": "CLIENTE7",
+      "destinatario": {
+        "nome": "CLIENTE7",
+        "indirizzo": "STRAAT DEMO 123",
+        "localita": "1015 CJ AMSTERDAM PAESI BASSI"
+      },
+      "luogoConsegna": "1015 CJ AMSTERDAM PAESI BASSI"
+    },
+    "cliente8": {
+      "nome": "CLIENTE8",
+      "destinatario": {
+        "nome": "CLIENTE8",
+        "indirizzo": "BOULEVARD TEST 87",
+        "localita": "1463 SOFIA BULGARIA"
+      },
+      "luogoConsegna": "1463 SOFIA BULGARIA"
+    },
+    "cliente9": {
+      "nome": "CLIENTE9",
+      "destinatario": {
+        "nome": "CLIENTE9",
+        "indirizzo": "ALEJE EXAMPLE 56",
+        "localita": "00-803 WARSZAWA POLONIA"
+      },
+      "luogoConsegna": "00-803 WARSZAWA POLONIA"
+    },
+    "cliente10": {
+      "nome": "CLIENTE10",
+      "destinatario": {
+        "nome": "CLIENTE10",
+        "indirizzo": "RUA SAMPLE 245",
+        "localita": "1100-048 LISBOA PORTOGALLO"
+      },
+      "luogoConsegna": "1100-048 LISBOA PORTOGALLO"
+    }
+  }
+}

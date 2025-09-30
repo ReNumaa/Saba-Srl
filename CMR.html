@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMR - Quarta Copia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            font-size: 13px;
+            zoom: 1.2;
+        }
+        
+        .print-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 10000;
+        }
+        
+        .print-button:hover {
+            background-color: #0056b3;
+        }
+        
+        .print-button:active {
+            transform: translateY(1px);
+        }
+        
+        .template-controls {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            padding: 20px;
+            border: 3px solid #28a745;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            z-index: 10001;
+            min-width: 300px;
+        }
+
+        .client-toggle-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 10000;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .client-toggle-btn:hover {
+            background-color: #218838;
+        }
+
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.3);
+            z-index: 10000;
+        }
+        
+        .template-controls label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .template-controls select {
+            width: 100%;
+            padding: 8px;
+            font-size: 12px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            margin-bottom: 10px;
+        }
+        
+        .template-controls button {
+            width: 100%;
+            padding: 8px;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .btn-primary {
+            background-color: #28a745;
+        }
+        
+        .btn-primary:hover {
+            background-color: #218838;
+        }
+        
+        .btn-secondary {
+            background-color: #17a2b8;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #138496;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 500px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        
+        .modal-content h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .modal-content input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .modal-content label {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .modal-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .cmr-container {
+            width: 200mm;
+            margin: 0 auto;
+            border: 2px solid #000;
+            background: white;
+        }
+        
+        .header {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            border-bottom: 2px solid #000;
+        }
+        
+        .header-left {
+            border-right: 2px solid #000;
+            padding: 5px;
+        }
+        
+        .header-center {
+            padding: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .header-right {
+            padding: 5px;
+            font-size: 7px;
+        }
+        
+        .section {
+            border-bottom: 2px solid #000;
+            display: grid;
+        }
+        
+        .section-2col {
+            grid-template-columns: 50% 50%;
+        }
+        
+        .col {
+            padding: 5px;
+            min-height: 60px;
+        }
+        
+        .col-left {
+            border-right: 2px solid #000;
+        }
+        
+        .label {
+            font-size: 10px;
+            line-height: 1.1;
+            margin-bottom: 3px;
+        }
+        
+        .label-num {
+            font-weight: bold;
+        }
+        
+        input[type="text"], textarea, input[type="date"], input[type="time"] {
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid #ccc;
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            padding: 2px;
+            margin-top: 2px;
+            background-color: #f0f8ff;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 40px;
+        }
+        
+        .section-3-4 {
+            display: grid;
+            grid-template-columns: 50% 50%;
+        }
+        
+        .section-5 {
+            padding: 5px;
+            min-height: 50px;
+        }
+        
+        .section-table {
+            border-bottom: 2px solid #000;
+        }
+        
+        .table-header {
+            display: grid;
+            grid-template-columns: 14.28% 14.28% 14.28% 14.28% 14.28% 14.28% 14.32%;
+            background: #f0f0f0;
+            border-bottom: 1px solid #000;
+        }
+        
+        .table-header > div {
+            padding: 3px;
+            border-right: 1px solid #000;
+            font-size: 9px;
+            line-height: 1.0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .table-header > div strong {
+            font-size: 14px;
+            margin-right: 5px;
+        }
+        
+        .table-header > div:last-child {
+            border-right: none;
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: 14.28% 14.28% 14.28% 14.28% 14.28% 14.28% 14.32%;
+            min-height: 30px;
+        }
+        
+        .table-row > div {
+            padding: 3px;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #ccc;
+        }
+        
+        .table-row > div:last-child {
+            border-right: none;
+        }
+        
+        .table-row input {
+            border: none;
+            border-bottom: none;
+        }
+        
+        .adr-section {
+            display: grid;
+            grid-template-columns: 40% 20% 20% 20%;
+            border-bottom: 2px solid #000;
+            padding: 5px;
+        }
+        
+        .adr-section > div {
+            padding: 3px;
+        }
+        
+        .bottom-section {
+            display: grid;
+            grid-template-columns: 50% 50%;
+        }
+        
+        .bottom-left {
+            border-right: 2px solid #000;
+        }
+        
+        .section-13-14-21 {
+            border-bottom: 2px solid #000;
+            padding: 5px;
+            min-height: 25px;
+        }
+        
+        .section-19-20-15 {
+            padding: 5px;
+            min-height: 80px;
+        }
+        
+        .payment-table {
+            display: grid;
+            grid-template-columns: 60% 20% 20%;
+            font-size: 10px;
+            margin-top: 10px;
+        }
+        
+        .payment-row {
+            display: contents;
+        }
+        
+        .payment-row > div {
+            padding: 2px;
+            border: 1px solid #ccc;
+        }
+        
+        .signatures {
+            display: grid;
+            grid-template-columns: 33.33% 33.33% 33.34%;
+            border-top: 2px solid #000;
+        }
+        
+        .signature-box {
+            padding: 8px;
+            min-height: 60px;
+            border-right: 2px solid #000;
+            position: relative;
+        }
+        
+        .signature-box:last-child {
+            border-right: none;
+        }
+        
+        .signature-label {
+            font-size: 10px;
+            line-height: 1.1;
+            margin-top: 0px;
+            text-align: center;
+        }
+        
+        .num-box {
+            position: absolute;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        
+        .field-group {
+            position: relative;
+        }
+        
+        @media print {
+            body {
+                padding: 5mm;
+                zoom: 1 !important;
+            }
+            .cmr-container {
+                border: 2px solid #000;
+            }
+            .print-button {
+                display: none;
+            }
+            @page {
+                margin: 0;
+                size: A4;
+            }
+            .template-controls, .modal, .client-toggle-btn, .popup-overlay {
+                display: none;
+            }
+
+            /* Rimuove il background degli input durante la stampa */
+            input[type="text"], textarea, input[type="date"], input[type="time"] {
+                background-color: transparent !important;
+            }
+
+            /* Nasconde solo i placeholder durante la stampa */
+            input::placeholder {
+                color: transparent;
+            }
+
+            /* Mostra il testo inserito normalmente */
+            input {
+                color: black;
+                background-color: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="validateAndPrint()">🖨️ Stampa CMR</button>
+
+    <!-- Pulsante per aprire gestione clienti -->
+    <button class="client-toggle-btn" onclick="toggleClientPanel()" title="Gestione Clienti">👥</button>
+
+    <!-- Overlay per il popup -->
+    <div class="popup-overlay" id="popupOverlay" onclick="closeClientPanel()"></div>
+    
+    <div class="cmr-container">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="header-left">
+                <div class="field-group">
+                    <div class="num-box" style="top: 0; left: 0;">1</div>
+                    <div class="label" style="margin-left: 15px;">
+                        Mittente (nome, domicilio, paese)<br>
+                        Expéditeur (nom, adresse, pays)<br>
+                        Sender (name, address, country)
+                    </div>
+                    <input type="text" value="SABA SRL" placeholder="Nome">
+                    <input type="text" value="LOCALITA' FORNACE 9 - FRAZ. NOZZA" placeholder="Indirizzo">
+                    <input type="text" value="25078 VESTONE - BRESCIA ITALIA" placeholder="Località, Paese">
+                </div>
+            </div>
+            
+            <div class="header-center">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px;">
+                    <div style="text-align: left;">
+                        <div style="font-size: 11px; font-weight: bold; margin-bottom: 2px;">LETTERA DI VETTURA INTERNAZIONALE</div>
+                        <div style="font-size: 10px; font-weight: bold; margin-bottom: 2px;">LETTRE DE VOITURE INTERNATIONALE</div>
+                        <div style="font-size: 10px; font-weight: bold;">INTERNATIONAL CONSIGNMENT NOTE</div>
+                    </div>
+                    <div style="border: 2px solid #000; padding: 5px 15px; font-size: 14px; font-weight: bold; margin-left: 10px;">CMR</div>
+                </div>
+                <div style="font-size: 6.5px; text-align: left; line-height: 1.3;">
+                    <p style="margin-bottom: 3px;">Questo trasporto è sottoposto, nonostante tutte le clausole contrarie, alla Convenzione del Trasporto Stradale Internazionale di Merci su Strada (CMR).</p>
+                    <p style="margin-bottom: 3px;">Ce transport est soumis à la Convention relative au contrat de transport International de marchandises par route.</p>
+                    <p>This carriage is subject to the Convention on the Contract for the International Carriage of goods by road.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SEZIONE 2 e 16 -->
+        <div class="section section-2col">
+            <div class="col col-left">
+                <div class="field-group">
+                    <div class="num-box" style="top: 0; left: 0;">2</div>
+                    <div class="label" style="margin-left: 15px;">
+                        Destinatario (nome, domicilio, paese)<br>
+                        Destinataire (nom, adresse, pays)<br>
+                        Consignee (name, address, country)
+                    </div>
+                    <input type="text" placeholder="Nome">
+                    <input type="text" placeholder="Indirizzo">
+                    <input type="text" placeholder="Località, Paese">
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="field-group">
+                    <div class="num-box" style="top: 0; left: 0;">16</div>
+                    <div class="label" style="margin-left: 20px;">
+                        Trasportatore (nome, domicilio, paese)<br>
+                        Transporteur (nom, adresse, pays)<br>
+                        Carrier (name, address, country)
+                    </div>
+                    <input type="text" placeholder="Nome">
+                    <input type="text" placeholder="Indirizzo">
+                </div>
+            </div>
+        </div>
+        
+        <!-- SEZIONE 3-4 e 17 -->
+        <div class="section section-3-4">
+            <div class="col-left" style="padding: 0; position: relative;">
+                <div style="height: 50%; padding: 5px; border-bottom: 2px solid #000;">
+                    <div class="field-group">
+                        <div class="num-box" style="top: 0; left: 0;">3</div>
+                        <div class="label" style="margin-left: 15px;">
+                            Luogo di presa in consegna delle merci<br>
+                            Lieu pour la livraison de la marchandise<br>
+                            Place of delivery of the goods
+                        </div>
+                        <input type="text" placeholder="Località">
+                    </div>
+                </div>
+                <div style="height: 50%; padding: 5px;">
+                    <div class="field-group">
+                        <div class="num-box" style="top: 0; left: 0;">4</div>
+                        <div class="label" style="margin-left: 15px;">
+                            Luogo di destinazione delle merci<br>
+                            Lieu de la prise en charge de la marchandise<br>
+                            Place of taking over the goods
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="text" value="25070 BARGHE (BRESCIA) ITALY" placeholder="Località" style="flex: 1;">
+                            <input type="date" style="width: 130px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="field-group">
+                    <div class="num-box" style="top: 0; left: 0;">17</div>
+                    <div class="label" style="margin-left: 20px;">
+                        Trasportatore successivo (nome, domicilio, paese)<br>
+                        Transporteurs successifs (nom, address, pays)<br>
+                        Successive carriers (name, address, country)
+                    </div>
+                    <input type="text">
+                    <input type="text">
+                </div>
+            </div>
+        </div>
+        
+        <!-- SEZIONE 5 e 18 -->
+        <div class="section" style="display: grid; grid-template-columns: 50% 50%;">
+            <div style="padding: 5px; border-right: 2px solid #000;">
+                <div class="field-group">
+                    <div class="num-box" style="top: 0; left: 0;">5</div>
+                    <div class="label" style="margin-left: 15px;">
+                        Documenti allegati / Documents annexés / Documents attached
+                    </div>
+                    <input type="text" placeholder="Documenti">
+                </div>
+            </div>
+            <div style="padding: 5px;">
+                <div class="field-group">
+                    <div class="num-box" style="top: 0; left: 0;">18</div>
+                    <div class="label" style="margin-left: 20px;">
+                        Riserve ed osservazioni del corriere<br>
+                        Réserves ed observations du transporteur<br>
+                        Carrier's reservations and observations
+                    </div>
+                    <input type="text" placeholder="Riserve e osservazioni">
+                </div>
+            </div>
+        </div>
+        
+        <!-- TABELLA MERCI (6-12) -->
+        <div class="section-table">
+            <div class="table-header">
+                <div>
+                    <strong>6</strong>
+                    <span>Contrassegni e numeri<br>Marques et numéros<br>Marks and number</span>
+                </div>
+                <div>
+                    <strong>7</strong>
+                    <span>Numero dei colli<br>Nombre des colis<br>Number of packages</span>
+                </div>
+                <div>
+                    <strong>8</strong>
+                    <span>Tipo di imballaggio<br>Mode d'emballage<br>Method of packing</span>
+                </div>
+                <div>
+                    <strong>9</strong>
+                    <span>Descrizione delle merci<br>Nature de la marchandise<br>Nature of the goods</span>
+                </div>
+                <div>
+                    <strong>10</strong>
+                    <span>Numero statistico<br>N° statistique<br>N° statistic</span>
+                </div>
+                <div>
+                    <strong>11</strong>
+                    <span>Peso Lordo Kg.<br>Poids brut Kg.<br>Gross Weight Kg.</span>
+                </div>
+                <div>
+                    <strong>12</strong>
+                    <span>Volume m³<br>Cubage m³<br>Volume in m³</span>
+                </div>
+            </div>
+            
+            <div class="table-row">
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+            </div>
+            <div class="table-row">
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+            </div>
+            <div class="table-row">
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+            </div>
+        </div>
+        
+        <!-- SEZIONE ADR -->
+        <div class="adr-section">
+            <div>
+                <div class="label">Classe / Class / Klasse</div>
+                <input type="text">
+            </div>
+            <div>
+                <div class="label">Cifre / Number / Ziffer</div>
+                <input type="text">
+            </div>
+            <div>
+                <div class="label">Lettere / Letter / Buchstabe</div>
+                <input type="text">
+            </div>
+            <div>
+                <div class="label">(ADR)</div>
+                <input type="text">
+            </div>
+        </div>
+        
+        <!-- SEZIONE INFERIORE: 13-14-21 | 19-20-15 -->
+        <div class="bottom-section">
+            <div class="bottom-left">
+                <div class="section-13-14-21">
+                    <div class="field-group">
+                        <div class="num-box" style="top: 0; left: 0;">13</div>
+                        <div class="label" style="margin-left: 20px;">
+                            Istruzioni del mittente<br>
+                            Instructions de l'expéditeur<br>
+                            Sender's instructions
+                        </div>
+                        <input type="text" placeholder="Istruzioni">
+                    </div>
+                </div>
+
+                <div style="padding: 5px; border-bottom: 2px solid #000; min-height: 60px;">
+                    <div class="field-group">
+                        <div class="num-box" style="top: 0; left: 0;">14</div>
+                        <div class="label" style="margin-left: 20px;">
+                            Tipo di pagamento<br>
+                            Prescriptions d'affranchissement<br>
+                            Instructions as to payment carriage
+                        </div>
+                        <div style="margin-top: 5px;">
+                            <label><input type="radio" name="payment" value="franco"> Porto franco / Carriage paid</label><br>
+                            <label><input type="radio" name="payment" value="non-franco"> Porto non franco / Carriage forward</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="padding: 5px; min-height: 60px; display: flex; align-items: center;">
+                    <div class="field-group" style="width: 100%;">
+                        <div class="num-box" style="top: 0; left: 0;">21</div>
+                        <div style="margin-left: 20px;">
+                            <div class="label">
+                                Stabilito in:<br>
+                                Établi à<br>
+                                Established in
+                            </div>
+                            <input type="text" value="25070 BARGHE (BRESCIA) ITALY" placeholder="Località">
+                            <div class="label" style="margin-top: 5px;">il / le / on</div>
+                            <input type="date">
+                            <div class="label" style="margin-top: 5px;">alle ore / à / at</div>
+                            <input type="time">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div style="padding: 5px; border-bottom: 2px solid #000; min-height: 20px;">
+                    <div class="field-group">
+                        <div class="num-box" style="top: 0; left: 0;">19</div>
+                        <div class="label" style="margin-left: 20px;">
+                            Convenzioni particolari<br>
+                            Conventions particulières<br>
+                            Special agreement
+                        </div>
+                        <input type="text" placeholder="Convenzioni">
+                    </div>
+                </div>
+
+                <div style="padding: 5px; border-bottom: 2px solid #000; min-height: 140px;">
+                    <div class="field-group">
+                        <div class="num-box" style="top: 0; left: 0;">20</div>
+                        <table style="width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 5px; margin-left: 20px; width: calc(100% - 20px);">
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 3px; width: 40%;">Pagare per:<br>To be paid by:</td>
+                                <td style="border: 1px solid #000; padding: 3px; width: 18%; text-align: center; font-weight: bold;">Mittente<br>Sender</td>
+                                <td style="border: 1px solid #000; padding: 3px; width: 24%; text-align: center;">Valuta<br>Currency</td>
+                                <td style="border: 1px solid #000; padding: 3px; width: 18%; text-align: center; font-weight: bold;">Destinatario<br>Consignee</td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 3px;">Prezzo del trasporto:<br>Carriage charges:</td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 3px;">Sconti:<br>Deductions:</td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 3px;">Contante:<br>Balance:</td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 3px;">Supplementi:<br>Supplement. charges:</td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 3px;">Spese accessorie:<br>Other charges:</td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 3px; font-weight: bold;">TOTAL</td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                                <td style="border: 1px solid #000; padding: 3px;"><input type="text" style="width: 100%; border: none;"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <div style="padding: 5px; min-height: 35px;">
+                    <div class="field-group">
+                        <div class="num-box" style="top: 0; left: 0;">15</div>
+                        <div class="label" style="margin-left: 20px;">
+                            Rimborso / Remboursement / Cash on delivery
+                        </div>
+                        <input type="text">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SEZIONI FIRMA 22-23-24 -->
+        <div class="signatures">
+            <div class="signature-box">
+                <div class="field-group">
+                    <div class="num-box" style="top: 5px; left: 5px;">22</div>
+                    <div class="signature-label">
+                        Firma e Timbro del Mittente<br>
+                        Signature et timbre de l'expéditeur<br>
+                        Signature and stamp of the sender
+                    </div>
+                </div>
+            </div>
+            
+            <div class="signature-box">
+                <div class="field-group">
+                    <div class="num-box" style="top: 5px; left: 5px;">23</div>
+                    <div class="signature-label">
+                        Firma e Timbro del Trasportatore<br>
+                        Signature et timbre du transporteur<br>
+                        Signature and stamp of the carrier
+                    </div>
+                </div>
+            </div>
+            
+            <div class="signature-box">
+                <div class="field-group">
+                    <div class="num-box" style="top: 5px; left: 5px;">24</div>
+                    <div class="signature-label">
+                        Ricevuta della Merce<br>
+                        Marchandises reçues<br>
+                        Goods received<br>
+                        Luogo / Lieu / Place: <input type="text" style="width: 120px;"><br>
+                        il / le / on: _______________<br>
+                        Firma e Timbro del Destinatario<br>
+                        Signature et timbre du destinataire<br>
+                        Signature and stamp of the consignee
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pannello controlli template -->
+    <div class="template-controls" id="clientPanel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <label for="clienteSearch" style="margin: 0; font-size: 16px; font-weight: bold;">Cerca Cliente:</label>
+            <button onclick="closeClientPanel()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #666; padding: 0; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center;" title="Chiudi">&times;</button>
+        </div>
+        <input type="text" id="clienteSearch" placeholder="Digita per cercare o selezionare..." autocomplete="off" style="padding: 10px; font-size: 14px;">
+        <div id="clienteDropdown" style="display: none; position: absolute; background: white; border: 1px solid #ccc; border-radius: 3px; max-height: 150px; overflow-y: auto; width: 100%; z-index: 1000;"></div>
+
+        <button class="btn-primary" onclick="caricaTemplate()">Carica Dati Cliente</button>
+        <button class="btn-secondary" onclick="apriModalCliente()">Nuovo Cliente</button>
+        <button class="btn-secondary" onclick="modificaCliente()">Modifica Cliente</button>
+        <button class="btn-danger" onclick="eliminaCliente()">Elimina Cliente</button>
+
+        <hr style="margin: 10px 0; border: 1px solid #ccc;">
+
+        <button class="btn-secondary" onclick="esportaTemplates()">💾 Salva Template</button>
+        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importaTemplates(event)">
+        <button class="btn-secondary" onclick="document.getElementById('importFile').click()">📂 Carica Template</button>
+    </div>
+
+    <!-- Modal per gestione clienti -->
+    <div id="modalCliente" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Aggiungi Nuovo Cliente</h3>
+
+            <label>Nome Cliente (per il menu):</label>
+            <input type="text" id="nomeClienteMenu" placeholder="Es: INO BREZICE">
+
+            <label>Destinatario - Nome:</label>
+            <input type="text" id="destNome" placeholder="Nome destinatario">
+
+            <label>Destinatario - Indirizzo:</label>
+            <input type="text" id="destIndirizzo" placeholder="Indirizzo destinatario">
+
+            <label>Destinatario - Località:</label>
+            <input type="text" id="destLocalita" placeholder="Località, Paese">
+
+            <label>Luogo di Consegna:</label>
+            <input type="text" id="luogoConsegna" placeholder="Luogo di consegna">
+
+            <div class="modal-buttons">
+                <button class="btn-primary" onclick="salvaCliente()">Salva</button>
+                <button class="btn-secondary" onclick="chiudiModal()">Annulla</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let clienteInModifica = null;
+
+        // Funzione per validare i campi obbligatori prima della stampa
+        function validateAndPrint() {
+            const requiredFields = [];
+
+            // Trova tutti i num-box e i relativi input
+            const numBoxes = document.querySelectorAll('.num-box');
+
+            numBoxes.forEach(box => {
+                const sectionNum = box.textContent.trim();
+
+                if (sectionNum === '2') {
+                    // Sezione 2 - Destinatario (3 campi)
+                    const parent = box.closest('.field-group');
+                    const inputs = parent.querySelectorAll('input[type="text"]');
+                    if (inputs.length >= 3) {
+                        if (!inputs[0].value.trim()) requiredFields.push('Sezione 2: Nome destinatario');
+                        if (!inputs[1].value.trim()) requiredFields.push('Sezione 2: Indirizzo destinatario');
+                        if (!inputs[2].value.trim()) requiredFields.push('Sezione 2: Località destinatario');
+                    }
+                }
+
+                if (sectionNum === '3') {
+                    // Sezione 3 - Luogo presa in consegna
+                    const parent = box.closest('.field-group');
+                    const input = parent.querySelector('input[type="text"]');
+                    if (input && !input.value.trim()) {
+                        requiredFields.push('Sezione 3: Luogo di presa in consegna');
+                    }
+                }
+
+                if (sectionNum === '4') {
+                    // Sezione 4 - Luogo destinazione + data
+                    const parent = box.closest('.field-group');
+                    const inputs = parent.querySelectorAll('input');
+                    if (inputs.length >= 2) {
+                        if (!inputs[0].value.trim()) requiredFields.push('Sezione 4: Luogo di destinazione');
+                        if (!inputs[1].value.trim()) requiredFields.push('Sezione 4: Data');
+                    }
+                }
+
+                if (sectionNum === '5') {
+                    // Sezione 5 - Documenti allegati
+                    const parent = box.closest('.field-group');
+                    const input = parent.querySelector('input[type="text"]');
+                    if (input && !input.value.trim()) {
+                        requiredFields.push('Sezione 5: Documenti allegati');
+                    }
+                }
+
+                if (sectionNum === '21') {
+                    // Sezione 21 - Stabilito in + data + ora
+                    const parent = box.closest('.field-group');
+                    const inputs = parent.querySelectorAll('input');
+                    if (inputs.length >= 3) {
+                        if (!inputs[0].value.trim()) requiredFields.push('Sezione 21: Luogo stabilimento');
+                        if (!inputs[1].value.trim()) requiredFields.push('Sezione 21: Data');
+                        if (!inputs[2].value.trim()) requiredFields.push('Sezione 21: Ora');
+                    }
+                }
+            });
+
+            // Se ci sono campi mancanti, mostra l'errore
+            if (requiredFields.length > 0) {
+                alert('I seguenti campi sono obbligatori:\\n\\n' + requiredFields.join('\\n'));
+                return false;
+            }
+
+            // Se tutto è ok, procedi con la stampa
+            window.print();
+        }
+        
+        // Carica i template da localStorage o usa quelli di default
+        function getTemplates() {
+            const saved = localStorage.getItem('cmr_templates');
+            if (saved) {
+                return JSON.parse(saved);
+            }
+            
+            // Template di default
+            return {
+                "mittente": {
+                    "nome": "SABA SRL",
+                    "indirizzo": "LOCALITA' FORNACE 9 - FRAZ. NOZZA",
+                    "localita": "25078 VESTONE - BRESCIA ITALIA"
+                },
+                "clienti": {
+                    "ino_brezice": {
+                        "nome": "INO BREZICE D.O.O.",
+                        "destinatario": {
+                            "nome": "INO BREZICE D.O.O. - INTRACEE",
+                            "indirizzo": "KRSKA VAS 034/B",
+                            "localita": "08262 KRASKA VAS - SLOVENIA (SI)"
+                        },
+                        "luogoConsegna": "08262 KRASKA VAS - SLOVENIA (SI)",
+                        "luogoDestinazione": "25070 BARGHE (BRESCIA) ITALY",
+                        "trasportatore": {
+                            "nome": "",
+                            "indirizzo": ""
+                        }
+                    }
+                }
+            };
+        }
+        
+        // Salva i template in localStorage
+        function salvaTemplates(templates) {
+            localStorage.setItem('cmr_templates', JSON.stringify(templates));
+        }
+        
+        // Carica i template
+        function caricaTemplates() {
+            const templates = getTemplates();
+            const searchInput = document.getElementById('clienteSearch');
+
+            if (!searchInput) {
+                console.error('Elemento clienteSearch non trovato');
+                return;
+            }
+
+            // Memorizza i clienti globalmente per la ricerca
+            window.clientiDisponibili = templates.clienti;
+
+            // Setup event listeners per la ricerca
+            setupClientSearch();
+        }
+
+        // Configura la ricerca clienti
+        function setupClientSearch() {
+            const searchInput = document.getElementById('clienteSearch');
+            const dropdown = document.getElementById('clienteDropdown');
+
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                showClientDropdown(query);
+            });
+
+            searchInput.addEventListener('focus', function() {
+                showClientDropdown(this.value.toLowerCase());
+            });
+
+            // Chiudi dropdown quando clicchi fuori
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+        }
+
+        // Mostra dropdown con clienti filtrati
+        function showClientDropdown(query) {
+            const dropdown = document.getElementById('clienteDropdown');
+            const clienti = window.clientiDisponibili || {};
+
+            dropdown.innerHTML = '';
+
+            const clientiFiltrati = Object.keys(clienti).filter(clienteId => {
+                const nome = clienti[clienteId].nome.toLowerCase();
+                return nome.includes(query);
+            });
+
+            if (clientiFiltrati.length === 0) {
+                dropdown.style.display = 'none';
+                return;
+            }
+
+            clientiFiltrati.forEach(clienteId => {
+                const item = document.createElement('div');
+                item.style.cssText = 'padding: 8px; cursor: pointer; border-bottom: 1px solid #eee;';
+                item.textContent = clienti[clienteId].nome;
+
+                item.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = '#f0f0f0';
+                });
+
+                item.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = 'white';
+                });
+
+                item.addEventListener('click', function() {
+                    selezionaCliente(clienteId, clienti[clienteId].nome);
+                });
+
+                dropdown.appendChild(item);
+            });
+
+            dropdown.style.display = 'block';
+        }
+
+        // Seleziona un cliente
+        function selezionaCliente(clienteId, nomeCliente) {
+            const searchInput = document.getElementById('clienteSearch');
+            const dropdown = document.getElementById('clienteDropdown');
+
+            searchInput.value = nomeCliente;
+            searchInput.setAttribute('data-client-id', clienteId);
+            dropdown.style.display = 'none';
+        }
+        
+        // Apri modal per nuovo cliente
+        function apriModalCliente() {
+            closeClientPanel(); // Chiude il pannello clienti
+            clienteInModifica = null;
+            document.getElementById('modalTitle').textContent = 'Aggiungi Nuovo Cliente';
+            document.getElementById('nomeClienteMenu').value = '';
+            document.getElementById('destNome').value = '';
+            document.getElementById('destIndirizzo').value = '';
+            document.getElementById('destLocalita').value = '';
+            document.getElementById('luogoConsegna').value = '';
+            document.getElementById('modalCliente').style.display = 'block';
+        }
+        
+        // Modifica cliente esistente
+        function modificaCliente() {
+            const searchInput = document.getElementById('clienteSearch');
+            const clienteId = searchInput.getAttribute('data-client-id');
+            if (!clienteId) {
+                alert('Seleziona prima un cliente da modificare');
+                return;
+            }
+
+            closeClientPanel(); // Chiude il pannello clienti
+            const templates = getTemplates();
+            const cliente = templates.clienti[clienteId];
+
+            clienteInModifica = clienteId;
+            document.getElementById('modalTitle').textContent = 'Modifica Cliente';
+            document.getElementById('nomeClienteMenu').value = cliente.nome;
+            document.getElementById('destNome').value = cliente.destinatario.nome;
+            document.getElementById('destIndirizzo').value = cliente.destinatario.indirizzo;
+            document.getElementById('destLocalita').value = cliente.destinatario.localita;
+            document.getElementById('luogoConsegna').value = cliente.luogoConsegna;
+            document.getElementById('modalCliente').style.display = 'block';
+        }
+        
+        // Salva cliente (nuovo o modificato)
+        function salvaCliente() {
+            const nomeMenu = document.getElementById('nomeClienteMenu').value.trim();
+            const destNome = document.getElementById('destNome').value.trim();
+            const destIndirizzo = document.getElementById('destIndirizzo').value.trim();
+            const destLocalita = document.getElementById('destLocalita').value.trim();
+            const luogoConsegna = document.getElementById('luogoConsegna').value.trim();
+            const luogoDestinazione = '25070 BARGHE (BRESCIA) ITALY'; // Fisso
+            
+            if (!nomeMenu || !destNome || !destIndirizzo || !destLocalita) {
+                alert('Compila almeno i campi obbligatori (Nome cliente, Destinatario)');
+                return;
+            }
+            
+            const templates = getTemplates();
+            
+            // Crea ID univoco dal nome (se nuovo cliente)
+            let clienteId = clienteInModifica;
+            if (!clienteId) {
+                clienteId = nomeMenu.toLowerCase().replace(/[^a-z0-9]/g, '_');
+                // Verifica che l'ID non esista già
+                let counter = 1;
+                let idBase = clienteId;
+                while (templates.clienti[clienteId]) {
+                    clienteId = idBase + '_' + counter;
+                    counter++;
+                }
+            }
+            
+            templates.clienti[clienteId] = {
+                nome: nomeMenu,
+                destinatario: {
+                    nome: destNome,
+                    indirizzo: destIndirizzo,
+                    localita: destLocalita
+                },
+                luogoConsegna: luogoConsegna,
+                luogoDestinazione: '25070 BARGHE (BRESCIA) ITALY',
+                trasportatore: {
+                    nome: '',
+                    indirizzo: ''
+                }
+            };
+            
+            salvaTemplates(templates);
+            caricaTemplates();
+            chiudiModal();
+            
+            // Seleziona il cliente appena salvato
+            selezionaCliente(clienteId, nomeMenu);
+            
+            alert('Cliente salvato con successo!');
+        }
+        
+        // Elimina cliente
+        function eliminaCliente() {
+            const searchInput = document.getElementById('clienteSearch');
+            const clienteId = searchInput.getAttribute('data-client-id');
+            if (!clienteId) {
+                alert('Seleziona prima un cliente da eliminare');
+                return;
+            }
+            
+            if (!confirm('Sei sicuro di voler eliminare questo cliente?')) {
+                return;
+            }
+            
+            const templates = getTemplates();
+            delete templates.clienti[clienteId];
+            salvaTemplates(templates);
+            caricaTemplates();
+            
+            alert('Cliente eliminato');
+        }
+        
+        // Chiudi modal
+        function chiudiModal() {
+            document.getElementById('modalCliente').style.display = 'none';
+        }
+        
+        // Funzioni per gestire il pannello clienti
+        function toggleClientPanel() {
+            const panel = document.getElementById('clientPanel');
+            const overlay = document.getElementById('popupOverlay');
+
+            if (panel.style.display === 'none' || panel.style.display === '') {
+                panel.style.display = 'block';
+                overlay.style.display = 'block';
+            } else {
+                closeClientPanel();
+            }
+        }
+
+        function closeClientPanel() {
+            const panel = document.getElementById('clientPanel');
+            const overlay = document.getElementById('popupOverlay');
+            panel.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+
+        // Auto-nasconde il pannello quando si inizia a digitare nei campi CMR o modal
+        function setupAutoHide() {
+            const cmrInputs = document.querySelectorAll('.cmr-container input, .cmr-container textarea');
+            const modalInputs = document.querySelectorAll('#modalCliente input, #modalCliente textarea');
+
+            cmrInputs.forEach(input => {
+                input.addEventListener('focus', closeClientPanel);
+                input.addEventListener('click', closeClientPanel);
+            });
+
+            modalInputs.forEach(input => {
+                input.addEventListener('focus', closeClientPanel);
+                input.addEventListener('click', closeClientPanel);
+            });
+        }
+
+        // Carica i dati del cliente selezionato
+        function caricaTemplate() {
+            const searchInput = document.getElementById('clienteSearch');
+            const clienteId = searchInput.getAttribute('data-client-id');
+            if (!clienteId) {
+                alert('Seleziona un cliente');
+                return;
+            }
+
+            const templates = getTemplates();
+            const cliente = templates.clienti[clienteId];
+            const mittente = templates.mittente;
+
+            // I campi del mittente sono fissi (SABA SRL) e non vengono sovrascritti
+
+            // Compila i campi del destinatario
+            const destinatarioInputs = document.querySelectorAll('.section-2col .col-left input');
+            if (destinatarioInputs[0]) destinatarioInputs[0].value = cliente.destinatario.nome;
+            if (destinatarioInputs[1]) destinatarioInputs[1].value = cliente.destinatario.indirizzo;
+            if (destinatarioInputs[2]) destinatarioInputs[2].value = cliente.destinatario.localita;
+
+            // Compila luogo di consegna (campo 3)
+            const allLocalitaInputs = document.querySelectorAll('.section-3-4 input[placeholder="Località"]');
+            if (allLocalitaInputs[0]) allLocalitaInputs[0].value = cliente.luogoConsegna;
+            // Il campo destinazione (4) mantiene il valore di default "25070 BARGHE (BRESCIA) ITALY"
+
+            // Compila trasportatore se presente
+            if (cliente.trasportatore && cliente.trasportatore.nome) {
+                const trasportatoreInputs = document.querySelectorAll('.section-2col .col:not(.col-left) input');
+                if (trasportatoreInputs[0]) trasportatoreInputs[0].value = cliente.trasportatore.nome;
+                if (trasportatoreInputs[1]) trasportatoreInputs[1].value = cliente.trasportatore.indirizzo;
+            }
+
+            alert('Dati cliente caricati con successo!');
+            closeClientPanel();
+        }
+        
+        // Chiudi modal cliccando fuori
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalCliente');
+            if (event.target == modal) {
+                chiudiModal();
+            }
+        }
+        
+        // Esporta template su file JSON
+        function esportaTemplates() {
+            const templates = getTemplates();
+            const dataStr = JSON.stringify(templates, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = 'cmr_templates.json';
+            link.click();
+
+            alert('Template esportati nel file cmr_templates.json');
+        }
+
+        // Importa template da file JSON
+        function importaTemplates(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const templates = JSON.parse(e.target.result);
+
+                    // Verifica che il formato sia corretto
+                    if (templates.mittente && templates.clienti) {
+                        salvaTemplates(templates);
+                        caricaTemplates();
+                        alert('Template importati con successo!');
+                    } else {
+                        alert('Formato file non valido');
+                    }
+                } catch (error) {
+                    alert('Errore nel caricamento del file: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+
+            // Reset input file
+            event.target.value = '';
+        }
+
+        // Carica i template all'avvio - ASPETTA CHE IL DOM SIA PRONTO
+        window.addEventListener('DOMContentLoaded', function() {
+            caricaTemplates();
+            setupAutoHide();
+        });
+    </script>
+</body>
+</html>
