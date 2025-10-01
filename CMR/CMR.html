@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMR - Quarta Copia</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📋</text></svg>">
+    <title>CMR - Saba srl</title>
     <style>
         * {
             margin: 0;
@@ -294,7 +295,7 @@
         
         .table-header {
             display: grid;
-            grid-template-columns: 14.28% 14.28% 14.28% 14.28% 14.28% 14.28% 14.32%;
+            grid-template-columns: 15.28% 13.28% 13.28% 19.28% 13.28% 13.28% 12.32%;
             background: #f0f0f0;
             border-bottom: 1px solid #000;
         }
@@ -319,7 +320,7 @@
         
         .table-row {
             display: grid;
-            grid-template-columns: 14.28% 14.28% 14.28% 14.28% 14.28% 14.28% 14.32%;
+            grid-template-columns: 15.28% 13.28% 13.28% 19.28% 13.28% 13.28% 12.32%;
             min-height: 30px;
         }
         
@@ -443,9 +444,29 @@
                 background-color: transparent !important;
             }
 
-            /* Nasconde solo i placeholder durante la stampa */
+            /* Nasconde i placeholder durante la stampa */
             input::placeholder {
                 color: transparent;
+            }
+
+            /* Nasconde completamente i campi data/ora vuoti durante la stampa */
+            input[type="date"],
+            input[type="time"] {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+            }
+
+            input[type="date"]::-webkit-datetime-edit,
+            input[type="time"]::-webkit-datetime-edit {
+                color: transparent;
+            }
+
+            input[type="date"]:focus::-webkit-datetime-edit,
+            input[type="time"]:focus::-webkit-datetime-edit,
+            input[type="date"]:valid::-webkit-datetime-edit,
+            input[type="time"]:valid::-webkit-datetime-edit {
+                color: black;
             }
 
             /* Mostra il testo inserito normalmente */
@@ -629,7 +650,7 @@
                     <span>Volume m³<br>Cubage m³<br>Volume in m³</span>
                 </div>
             </div>
-            
+
             <div class="table-row">
                 <div><input type="text"></div>
                 <div><input type="text"></div>
@@ -643,7 +664,7 @@
                 <div><input type="text"></div>
                 <div><input type="text"></div>
                 <div><input type="text"></div>
-                <div><input type="text"></div>
+                <div><input type="text" value="MATERIALE AGRICOLO"></div>
                 <div><input type="text"></div>
                 <div><input type="text"></div>
                 <div><input type="text"></div>
@@ -896,6 +917,36 @@
     <script>
         let clienteInModifica = null;
 
+        // Nascondi i campi data/ora vuoti prima della stampa
+        function hideEmptyDateTimeFields() {
+            const dateInputs = document.querySelectorAll('input[type="date"], input[type="time"]');
+            const originalData = [];
+
+            dateInputs.forEach((input) => {
+                const data = {
+                    element: input,
+                    value: input.value,
+                    type: input.type
+                };
+                originalData.push(data);
+
+                if (!input.value) {
+                    input.type = 'text';
+                    input.value = '';
+                }
+            });
+
+            return originalData;
+        }
+
+        // Ripristina i campi data/ora dopo la stampa
+        function restoreDateTimeFields(originalData) {
+            originalData.forEach(data => {
+                data.element.type = data.type;
+                data.element.value = data.value;
+            });
+        }
+
         // Funzione per validare i campi obbligatori prima della stampa
         function validateAndPrint() {
             const requiredFields = [];
@@ -927,12 +978,11 @@
                 }
 
                 if (sectionNum === '4') {
-                    // Sezione 4 - Luogo destinazione + data
+                    // Sezione 4 - Luogo destinazione (data opzionale)
                     const parent = box.closest('.field-group');
                     const inputs = parent.querySelectorAll('input');
-                    if (inputs.length >= 2) {
+                    if (inputs.length >= 1) {
                         if (!inputs[0].value.trim()) requiredFields.push('Sezione 4: Luogo di destinazione');
-                        if (!inputs[1].value.trim()) requiredFields.push('Sezione 4: Data');
                     }
                 }
 
@@ -946,13 +996,11 @@
                 }
 
                 if (sectionNum === '21') {
-                    // Sezione 21 - Stabilito in + data + ora
+                    // Sezione 21 - Stabilito in (data e ora opzionali)
                     const parent = box.closest('.field-group');
                     const inputs = parent.querySelectorAll('input');
-                    if (inputs.length >= 3) {
+                    if (inputs.length >= 1) {
                         if (!inputs[0].value.trim()) requiredFields.push('Sezione 21: Luogo stabilimento');
-                        if (!inputs[1].value.trim()) requiredFields.push('Sezione 21: Data');
-                        if (!inputs[2].value.trim()) requiredFields.push('Sezione 21: Ora');
                     }
                 }
             });
@@ -964,7 +1012,14 @@
             }
 
             // Se tutto è ok, procedi con la stampa
+            const originalValues = hideEmptyDateTimeFields();
+
             window.print();
+
+            // Ripristina i campi dopo la stampa
+            setTimeout(() => {
+                restoreDateTimeFields(originalValues);
+            }, 100);
         }
         
         // Carica i template da localStorage o usa quelli di default
